@@ -13,35 +13,55 @@ uuidv4();
 
 class App extends Component {
 	state = {
-		items: [
-			{ id: 1, title: "Wake Up" },
-			{ id: 1, title: "Learn Piano" },
-			{ id: 1, title: "Go shopping" },
-			{ id: 1, title: "Make Breakfast" }
-		],
+		items: [],
 		id: uuidv4(),
 		item: "",
-		editItem: false
+		editItem: false,
 	};
 	// methods
-	handlehange = e => {
-		console.log("handle change");
+	handleChange = (e) => {
+		this.setState({
+			item: e.target.value,
+		});
 	};
-	handleSubmit = e => {
-		console.log("handle submit");
+	handleSubmit = (e) => {
+		e.preventDefault();
+		const newItem = {
+			id: this.state.id,
+			title: this.state.item,
+		};
+		const updatedItems = [...this.state.items, newItem];
+
+		this.setState({
+			items: updatedItems,
+			item: "",
+			id: uuidv4(),
+			editItem: false,
+		});
 	};
-	clearList = e => {
-		console.log("clear list");
+	clearList = () => {
+		this.setState({
+			items: [],
+		});
 	};
-	handleDelete = id => {
-		console.log(`handle delete ${id}`);
+	handleDelete = (id) => {
+		const filteredItems = this.state.items.filter((item) => item.id !== id);
+		this.setState({
+			items: filteredItems,
+		});
 	};
-	handleEdit = id => {
-		console.log(`handle edit ${id}`);
+	handleEdit = (id) => {
+		const filteredItems = this.state.items.filter((item) => item.id !== id);
+		const selectedItem = this.state.items.find((item) => item.id === id);
+		this.setState({
+			items: filteredItems,
+			item: selectedItem.title,
+			id: id,
+			editItem: true,
+		});
 	};
 
 	render() {
-		console.log(this.state);
 		return (
 			<div className='container'>
 				<div className='row'>
@@ -51,13 +71,13 @@ class App extends Component {
 							item={this.state.item}
 							handleChange={this.handleChange}
 							handleSubmit={this.handleSubmit}
-							editItem={this.handleEdit}
+							editItem={this.state.editItem}
 						/>
 						<TodoList
 							items={this.state.items}
 							clearList={this.clearList}
-							handleEdit={this.handleEdit}
 							handleDelete={this.handleDelete}
+							handleEdit={this.handleEdit}
 						/>
 					</div>
 				</div>
